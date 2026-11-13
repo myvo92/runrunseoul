@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" width="240" height="200" fill="none" stroke="#22293D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="56" cy="58" r="26" fill="#F2B63D"/>
+        <path d="M184 128 L194 34 L200 14 L206 34 L216 128 Z" fill="#B7C7D9"/>
+        <path d="M197 40 L196 120 M203 40 L204 120" stroke-width="2"/>
+        <rect x="140" y="88" width="20" height="40" fill="#D9E2EC"/>
+        <rect x="162" y="72" width="16" height="56" fill="#D9E2EC"/>
+        <rect x="220" y="94" width="22" height="34" fill="#D9E2EC"/>
+        <rect x="-4" y="132" width="248" height="68" fill="#CFE6F5" stroke="none"/>
+        <path d="M-4 130 H244" stroke-width="5"/>
+        <path d="M6 130 Q48 70 90 130"/>
+        <path d="M90 130 Q132 70 174 130"/>
+        <path d="M27 108 V130 M48 100 V130 M69 108 V130 M111 108 V130 M132 100 V130 M153 108 V130" stroke-width="2"/>
+        <path d="M-4 152 q15 -9 30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0" stroke="#3B84B8"/>
+        <path d="M-4 170 q15 -9 30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0" stroke="#3B84B8"/>
+        <path d="M-4 188 q15 -9 30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0" stroke="#3B84B8"/>
+      </svg>
