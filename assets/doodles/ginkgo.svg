@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" width="240" height="200" fill="none" stroke="#22293D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <defs>
+          <g id="gk-ginkgo">
+            <path d="M120 120 Q118 150 112 182"/>
+            <path d="M120 120 Q72 108 64 56 Q80 34 106 44 L120 62 L134 44 Q160 34 176 56 Q168 108 120 120 Z" fill="#F2B63D"/>
+            <path d="M120 120 L76 64 M120 120 L94 50 M120 120 L120 66 M120 120 L146 50 M120 120 L164 64" stroke-width="2"/>
+          </g>
+        </defs>
+        <use href="#gk-ginkgo" transform="translate(0 4)"/>
+        <use href="#gk-ginkgo" transform="translate(56 176) rotate(-38) scale(0.46) translate(-112 -182)" style="fill: #F2A33D"/>
+        <use href="#gk-ginkgo" transform="translate(184 178) rotate(36) scale(0.4) translate(-112 -182)"/>
+        <path d="M30 40 q6 -8 12 0 q-6 4 -12 0 z" fill="#F2B63D" stroke-width="2.5"/>
+        <path d="M204 30 q6 -8 12 0 q-6 4 -12 0 z" fill="#F2B63D" stroke-width="2.5"/>
+        <path d="M196 96 q5 -7 10 0 q-5 3 -10 0 z" fill="#F2B63D" stroke-width="2.5"/>
+      </svg>
