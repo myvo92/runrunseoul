@@ -1,0 +1,654 @@
+<title>DCM - Run Run in Seoul Trip</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Lexend:wght@500;600;700&family=Gowun+Dodum&display=swap">
+<style>
+/* Layout: một cột dọc, thanh ngày dính trên cùng; mỗi ngày là một dải màu pastel riêng, mỗi điểm đến có nút Google Map + Naver Map */
+:root {
+  --bg: #fbf8f4;
+  --surface: #ffffff;
+  --fg: #3a3540;
+  --muted: #7a7380;
+  --line: #ece5dd;
+  --accent: #e8836b;          /* lá phong đỏ cam, dùng tiết chế */
+  --accent-soft: #fde6df;
+  --d1: #dcebf8; --d1-ink: #2f5c86;   /* xanh trời */
+  --d2: #e2f0dc; --d2-ink: #3f6b33;   /* xanh lá xô thơm */
+  --d3: #ebe4f7; --d3-ink: #5b4690;   /* oải hương */
+  --d4: #fde7d6; --d4-ink: #9a5226;   /* đào */
+  --hn: #fde4e4; --hn-ink: #a3423f;
+  --hcm: #dfe9fb; --hcm-ink: #2f4f8f;
+  --gmap: #e6f4ea; --gmap-ink: #1e6b3a;
+  --nmap: #e3f7e9; --nmap-ink: #03a94d;
+  --font-display: "Lexend", "Be Vietnam Pro", system-ui, sans-serif;
+  --font-body: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-ko: "Gowun Dodum", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1d1b20; --surface: #26232a; --fg: #efe9f1; --muted: #a79fae; --line: #38333d;
+    --accent: #f2a08c; --accent-soft: #46302b;
+    --d1: #22313f; --d1-ink: #a9cdf0;
+    --d2: #26331f; --d2-ink: #b5d9a3;
+    --d3: #2f2a3d; --d3-ink: #cbbdf0;
+    --d4: #3d2c22; --d4-ink: #f5c09c;
+    --hn: #3d2627; --hn-ink: #f4b0ad;
+    --hcm: #232d40; --hcm-ink: #a9c1f2;
+    --gmap: #1f3326; --gmap-ink: #9fdcb4;
+    --nmap: #1d3a28; --nmap-ink: #6fe39f;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1d1b20; --surface: #26232a; --fg: #efe9f1; --muted: #a79fae; --line: #38333d;
+  --accent: #f2a08c; --accent-soft: #46302b;
+  --d1: #22313f; --d1-ink: #a9cdf0;
+  --d2: #26331f; --d2-ink: #b5d9a3;
+  --d3: #2f2a3d; --d3-ink: #cbbdf0;
+  --d4: #3d2c22; --d4-ink: #f5c09c;
+  --hn: #3d2627; --hn-ink: #f4b0ad;
+  --hcm: #232d40; --hcm-ink: #a9c1f2;
+  --gmap: #1f3326; --gmap-ink: #9fdcb4;
+  --nmap: #1d3a28; --nmap-ink: #6fe39f;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+}
+.wrap {
+  max-width: 880px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+/* Header */
+header { padding-block: 40px 24px; }
+.eyebrow {
+  font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--accent); font-weight: 600;
+}
+h1 { font-size: clamp(34px, 7vw, 52px); line-height: 1.05; margin-top: 6px; letter-spacing: -.01em; }
+h1 .ko { font-family: var(--font-ko); font-weight: 400; font-size: .5em; color: var(--muted); margin-left: 8px; letter-spacing: 0; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 999px; padding: 6px 12px; font-size: 13.5px; font-weight: 500;
+}
+.chip svg { width: 15px; height: 15px; color: var(--accent); }
+
+/* Flights */
+.flights { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-bottom: 8px; }
+.flight { border-radius: 16px; padding: 16px 18px; min-width: 0; }
+.flight.hn { background: var(--hn); color: var(--hn-ink); }
+.flight.hcm { background: var(--hcm); color: var(--hcm-ink); }
+.flight h3 { font-size: 16px; display: flex; align-items: center; gap: 8px; }
+.flight .code { font-family: var(--font-body); font-size: 12.5px; font-weight: 600; opacity: .8; }
+.legs { display: grid; gap: 6px; margin-top: 10px; font-size: 14px; color: var(--fg); }
+.leg { display: grid; grid-template-columns: 54px 1fr; gap: 8px; align-items: baseline; }
+.leg b { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: inherit; opacity: .7; }
+.leg span { font-variant-numeric: tabular-nums; }
+
+/* Weather */
+.day-head[role="button"] { cursor: pointer; user-select: none; transition: filter .15s ease; }
+.day-head[role="button"]:hover { filter: brightness(.97); }
+.chev { display: inline-block; width: 1.1em; transition: transform .2s ease; }
+.day.collapsed .chev { transform: rotate(-90deg); }
+.day.collapsed .timeline { display: none; }
+.day.collapsed .day-head { border-radius: 20px; }
+.day-side { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.day-w {
+  display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  background: var(--surface); color: var(--fg); border-radius: 12px; padding: 6px 12px;
+  font-size: 13px; font-variant-numeric: tabular-nums; min-height: 34px;
+}
+.day-w .ic { font-size: 20px; line-height: 1; }
+.day-w .t { font-family: var(--font-display); font-weight: 600; }
+.day-w .t small { color: var(--muted); font-weight: 500; }
+.day-w .c, .day-w .r { color: var(--muted); }
+.day-w a { color: var(--muted); }
+.day-w:empty { display: none; }
+
+/* Main tabs */
+.tabs { display: flex; gap: 6px; border-bottom: 1px solid var(--line); overflow-x: auto; scrollbar-width: none; }
+.tabs a {
+  flex: 0 0 auto; text-decoration: none; font-family: var(--font-display); font-weight: 600; font-size: 14.5px;
+  padding: 10px 16px; border-radius: 12px 12px 0 0; color: var(--muted); border-bottom: 3px solid transparent; margin-bottom: -1px;
+}
+.tabs a[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--accent); }
+.tabs a:hover { color: var(--fg); }
+
+/* Prep tab */
+.prep { display: grid; gap: 14px; padding-block: 20px 48px; }
+.prep-intro { margin: 0; color: var(--muted); font-size: 13.5px; }
+.pcard { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; min-width: 0; }
+.pcard h2 { display: flex; align-items: center; gap: 10px; }
+.ico { width: 34px; height: 34px; border-radius: 12px; display: grid; place-items: center; flex: 0 0 auto; background: var(--accent-soft); color: var(--accent); }
+.ico svg { width: 20px; height: 20px; }
+.ico.sm { width: 30px; height: 30px; border-radius: 10px; }
+.ico.sm svg { width: 17px; height: 17px; }
+.ico[data-t="1"] { background: var(--d1); color: var(--d1-ink); }
+.ico[data-t="3"] { background: var(--d3); color: var(--d3-ink); }
+.ico[data-t="4"] { background: var(--d4); color: var(--d4-ink); }
+.pcard.hl .ico { background: var(--surface); }
+.app > div { display: grid; gap: 2px; min-width: 0; }
+.plugs { margin: 14px 0 0; background: var(--bg); border-radius: 14px; padding: 12px; overflow-x: auto; }
+.plugs svg { display: block; width: 100%; min-width: 420px; height: auto; max-width: 560px; margin: 0 auto; }
+.pl-body { fill: var(--d4); }
+.pl-body.ok { fill: var(--d2); }
+.pl-body.no { fill: var(--hn); }
+.pl-face { fill: var(--surface); }
+.pl-hole { fill: var(--d4-ink); opacity: .75; }
+.pl-clip { fill: var(--muted); opacity: .5; }
+.pl-pin { fill: var(--muted); }
+.pl-tick { fill: none; stroke: var(--d2-ink); stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }
+.pl-x { fill: none; stroke: var(--hn-ink); stroke-width: 7; stroke-linecap: round; }
+.pl-t { fill: var(--fg); font: 600 14px var(--font-body); }
+.pl-s { fill: var(--muted); font: 12.5px var(--font-body); }
+.pcard.hl { background: var(--accent-soft); border-color: transparent; }
+.pcard h2 { font-size: 18px; }
+.pcard p { margin: 8px 0 0; font-size: 14.5px; }
+.pcard .muted { color: var(--muted); font-size: 13.5px; }
+.pcard a { color: var(--accent); font-weight: 600; }
+.steps { margin: 10px 0 0; padding-left: 20px; font-size: 14.5px; display: grid; gap: 4px; }
+.facts-list { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 6px; font-size: 14.5px; }
+.check { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 2px; }
+.check label { display: flex; gap: 10px; align-items: flex-start; padding: 6px 4px; cursor: pointer; font-size: 14.5px; border-radius: 8px; }
+.check label:hover { background: var(--bg); }
+.check input { margin-top: 3px; width: 17px; height: 17px; accent-color: var(--accent); flex: 0 0 auto; }
+.check input:checked + span { color: var(--muted); text-decoration: line-through; }
+.apps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; margin-top: 12px; }
+.app { background: var(--bg); border-radius: 12px; padding: 10px 14px; display: grid; grid-template-columns: auto 1fr; align-items: start; gap: 10px; min-width: 0; }
+.app > div > b { font-family: var(--font-display); font-size: 14.5px; }
+.app > div > span { color: var(--muted); font-size: 13.5px; }
+
+/* Day nav */
+nav.days {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+  margin-top: 24px;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+nav.days .wrap { display: flex; gap: 8px; overflow-x: auto; padding-block: 10px; scrollbar-width: none; }
+nav.days a {
+  flex: 0 0 auto; text-decoration: none; font-size: 13.5px; font-weight: 600;
+  padding: 7px 14px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line);
+  white-space: nowrap;
+}
+nav.days a[data-day="1"] { background: var(--d1); color: var(--d1-ink); border-color: transparent; }
+nav.days a[data-day="2"] { background: var(--d2); color: var(--d2-ink); border-color: transparent; }
+nav.days a[data-day="3"] { background: var(--d3); color: var(--d3-ink); border-color: transparent; }
+nav.days a[data-day="4"] { background: var(--d4); color: var(--d4-ink); border-color: transparent; }
+
+/* Day section */
+main { padding-block: 8px 48px; display: grid; gap: 28px; }
+.day { scroll-margin-top: 70px; }
+.day-head {
+  border-radius: 20px 20px 0 0; padding: 18px 20px 16px;
+  display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap;
+}
+.day-head .num { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; }
+.day-head h2 { font-size: clamp(20px, 4vw, 26px); margin-top: 2px; }
+.day-head .date { font-family: var(--font-display); font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.today-tag {
+  display: none; font-size: 11.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  background: var(--accent); color: var(--bg); padding: 3px 9px; border-radius: 999px; margin-left: 8px; vertical-align: middle;
+}
+.day.is-today .today-tag { display: inline-block; }
+.day[data-day="1"] .day-head { background: var(--d1); color: var(--d1-ink); }
+.day[data-day="2"] .day-head { background: var(--d2); color: var(--d2-ink); }
+.day[data-day="3"] .day-head { background: var(--d3); color: var(--d3-ink); }
+.day[data-day="4"] .day-head { background: var(--d4); color: var(--d4-ink); }
+.day[data-day="1"] { --ink: var(--d1-ink); --tint: var(--d1); }
+.day[data-day="2"] { --ink: var(--d2-ink); --tint: var(--d2); }
+.day[data-day="3"] { --ink: var(--d3-ink); --tint: var(--d3); }
+.day[data-day="4"] { --ink: var(--d4-ink); --tint: var(--d4); }
+
+.timeline {
+  background: var(--surface); border: 1px solid var(--line); border-top: 0;
+  border-radius: 0 0 20px 20px; padding: 8px 20px 12px;
+  list-style: none; margin: 0;
+}
+.item {
+  display: grid; grid-template-columns: 96px 1fr; gap: 14px;
+  padding-block: 14px; border-bottom: 1px dashed var(--line);
+}
+.item:last-child { border-bottom: 0; }
+.time {
+  font-family: var(--font-display); font-weight: 600; font-size: 14px; color: var(--ink);
+  font-variant-numeric: tabular-nums; padding-top: 1px;
+}
+.body { min-width: 0; }
+.title { font-weight: 600; font-size: 15.5px; }
+.title .ko { font-family: var(--font-ko); font-weight: 400; color: var(--muted); font-size: 14px; margin-left: 4px; }
+.desc { color: var(--muted); font-size: 14px; margin-top: 2px; }
+.desc ul { margin: 4px 0 0; padding-left: 18px; }
+.group-tag {
+  display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  background: var(--accent-soft); color: var(--accent); padding: 2px 8px; border-radius: 6px; margin-bottom: 4px;
+}
+.item.event .title { font-size: 16.5px; }
+.or {
+  display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .08em;
+  color: var(--accent); margin: 6px 0 2px;
+}
+.place { margin-top: 8px; }
+.place + .place { margin-top: 10px; }
+.place-name { font-size: 14px; font-weight: 600; }
+.place-name .ko { font-family: var(--font-ko); font-weight: 400; color: var(--muted); margin-left: 4px; }
+.place-note { font-size: 12.5px; color: var(--muted); }
+.maps { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.maps a {
+  display: inline-flex; align-items: center; gap: 6px;
+  text-decoration: none; font-size: 12.5px; font-weight: 600;
+  padding: 5px 11px 5px 8px; border-radius: 999px;
+  transition: transform .15s ease, filter .15s ease;
+}
+.maps a:hover { transform: translateY(-1px); filter: brightness(.97); }
+.maps a.g { background: var(--gmap); color: var(--gmap-ink); }
+.maps a.n { background: var(--nmap); color: var(--nmap-ink); }
+.maps .dot {
+  width: 16px; height: 16px; border-radius: 5px; display: grid; place-items: center;
+  font-size: 10px; font-weight: 800; color: #fff; font-family: var(--font-display);
+}
+.maps a.g .dot { background: #4285f4; }
+.maps a.n .dot { background: #03c75a; }
+
+/* Suggestions */
+.section-title { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.section-title h2 { font-size: 22px; }
+.section-title p { margin: 0; color: var(--muted); font-size: 14px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; min-width: 0;
+  display: flex; flex-direction: column;
+}
+.card .cat { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.card h3 { font-size: 16px; margin-top: 2px; }
+.card .ko { font-family: var(--font-ko); color: var(--muted); font-size: 13.5px; }
+.card p { margin: 6px 0 0; font-size: 13.5px; color: var(--muted); flex: 1; }
+.card .maps { margin-top: 10px; }
+
+/* Poster */
+details.poster { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 12px 16px; }
+details.poster summary { cursor: pointer; font-weight: 600; font-family: var(--font-display); }
+details.poster img { display: block; margin-top: 12px; border-radius: 10px; max-width: 100%; height: auto; }
+
+footer { color: var(--muted); font-size: 12.5px; padding-block: 0 40px; }
+
+@media (max-width: 560px) {
+  .item { grid-template-columns: 1fr; gap: 4px; }
+  .timeline { padding: 4px 16px 8px; }
+  .day-head { padding: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; scroll-behavior: auto !important; }
+}
+html { scroll-behavior: smooth; }
+</style>
+
+<header class="wrap">
+  <div class="eyebrow">Mùa thu Seoul · 2026</div>
+  <h1>DCM - Run Run in Seoul Trip</h1>
+</header>
+
+<div class="wrap">
+  <div class="tabs" role="tablist" aria-label="Nội dung chính">
+    <a href="#lich-trinh" id="tab-plan" role="tab" aria-selected="true">Lịch trình</a>
+    <a href="#chuan-bi" id="tab-prep" role="tab" aria-selected="false">Chuẩn bị trước chuyến đi</a>
+  </div>
+</div>
+
+<section class="wrap" id="view-prep" aria-label="Chuẩn bị trước chuyến đi" hidden>
+  <div class="prep">
+    <p class="prep-intro">Tích vào ô để đánh dấu việc đã xong. Trạng thái được nhớ trên thiết bị của bạn.</p>
+
+
+
+    <article class="pcard">
+      <h2><span class="ico" data-t="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg></span>Các app cần tải</h2>
+      <p class="muted">Tải và đăng nhập trước khi bay. Tìm theo tên trong App Store hoặc CH Play.</p>
+      <div class="apps">
+        <div class="app"><span class="ico sm" data-t="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span><div><b>Naver Map</b><span>Bản đồ chính của Hàn Quốc, chỉ đường tàu điện và đi bộ chính xác nhất. Chọn ngôn ngữ tiếng Anh.</span></div></div>
+        <div class="app"><span class="ico sm" data-t="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span><div><b>Google Maps</b><span>Dự phòng để xem điểm đến và đánh giá. Chỉ đường đi bộ ở Hàn Quốc kém chính xác hơn Naver.</span></div></div>
+        <div class="app"><span class="ico sm" data-t="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg></span><div><b>Papago / Google Translate</b><span>Dịch tiếng Hàn, có dịch ảnh menu và biển hiệu. Tải sẵn gói ngôn ngữ để dùng khi không có mạng.</span></div></div>
+        <div class="app"><span class="ico sm" data-t="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2h4"/><path d="m21 8-2 2-1.5-3.7A2 2 0 0 0 15.646 5H8.4a2 2 0 0 0-1.903 1.257L5 10 3 8"/><path d="M7 14h.01"/><path d="M17 14h.01"/><rect width="18" height="8" x="3" y="10" rx="2"/><path d="M5 18v2"/><path d="M19 18v2"/></svg></span><div><b>Kakao T / Uber</b><span>Gọi taxi. Kakao T có thể cần thẻ quốc tế đã đăng ký trong app; Uber ở Hàn Quốc gọi taxi thường, dùng thẻ nước ngoài dễ hơn.</span></div></div>
+      </div>
+    </article>
+
+    <article class="pcard">
+      <h2><span class="ico" data-t="4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></svg></span>Ổ điện và sạc</h2>
+      <ul class="facts-list">
+        <li><b>Điện áp:</b> 220V, 60Hz (Việt Nam 220V, 50Hz).</li>
+        <li><b>Ổ cắm:</b> 2 chân tròn (kiểu C/F). Phích chân tròn của Việt Nam cắm được. Phích chân dẹt cần đầu chuyển.</li>
+        <li><b>Sạc điện thoại, laptop, máy ảnh:</b> thường ghi 100–240V nên dùng được, kiểm tra nhãn trên củ sạc.</li>
+        <li><b>Máy sấy, máy duỗi tóc, bàn ủi:</b> kiểm tra dải điện áp trước khi mang, hoặc dùng đồ của khách sạn.</li>
+      </ul>
+
+      <figure class="plugs">
+        <svg viewBox="0 0 560 190" role="img" aria-label="Ổ cắm Hàn Quốc 2 lỗ tròn, phích chân tròn cắm được, phích chân dẹt cần đầu chuyển">
+          <g transform="translate(20,10)">
+            <rect x="0" y="0" width="150" height="130" rx="26" class="pl-body"/>
+            <rect x="10" y="10" width="130" height="110" rx="20" class="pl-face"/>
+            <circle cx="52" cy="65" r="13" class="pl-hole"/><circle cx="98" cy="65" r="13" class="pl-hole"/>
+            <rect x="68" y="14" width="14" height="10" rx="3" class="pl-clip"/><rect x="68" y="106" width="14" height="10" rx="3" class="pl-clip"/>
+            <text x="75" y="160" text-anchor="middle" class="pl-t">Ổ Hàn Quốc (C/F)</text>
+            <text x="75" y="178" text-anchor="middle" class="pl-s">2 lỗ tròn, 220V</text>
+          </g>
+          <g transform="translate(205,10)">
+            <rect x="0" y="0" width="150" height="130" rx="26" class="pl-body ok"/>
+            <rect x="46" y="14" width="10" height="46" rx="5" class="pl-pin"/><rect x="94" y="14" width="10" height="46" rx="5" class="pl-pin"/>
+            <rect x="28" y="58" width="94" height="56" rx="20" class="pl-face"/>
+            <path d="M62 86l9 9 18-20" class="pl-tick"/>
+            <text x="75" y="160" text-anchor="middle" class="pl-t">Phích chân tròn</text>
+            <text x="75" y="178" text-anchor="middle" class="pl-s">Cắm thẳng được</text>
+          </g>
+          <g transform="translate(390,10)">
+            <rect x="0" y="0" width="150" height="130" rx="26" class="pl-body no"/>
+            <rect x="38" y="14" width="10" height="40" rx="2" class="pl-pin"/><rect x="102" y="14" width="10" height="40" rx="2" class="pl-pin"/>
+            <rect x="28" y="54" width="94" height="60" rx="20" class="pl-face"/>
+            <path d="M65 78l20 20M85 78l-20 20" class="pl-x"/>
+            <text x="75" y="160" text-anchor="middle" class="pl-t">Phích chân dẹt</text>
+            <text x="75" y="178" text-anchor="middle" class="pl-s">Cần đầu chuyển</text>
+          </g>
+        </svg>
+      </figure>
+      <ul class="check">
+        <li><label><input type="checkbox" data-k="dien1"><span>Mang đầu chuyển ổ cắm</span></label></li>
+        <li><label><input type="checkbox" data-k="dien2"><span>Pin dự phòng để trong hành lý xách tay, không ký gửi</span></label></li>
+        <li><label><input type="checkbox" data-k="dien3"><span>Ổ cắm nhiều cổng USB để sạc nhiều máy cùng lúc</span></label></li>
+      </ul>
+    </article>
+
+    <article class="pcard">
+      <h2><span class="ico" data-t="3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg></span>Trang phục</h2>
+      <p>Cuối tháng 11 Seoul rất lạnh. Dự báo hiện tại cho 21–24/11 trong khoảng -4° đến 8°C, sáng và tối lạnh nhất, có thể có tuyết hoặc mưa phùn ở Ngày 3 và 4. Xem số mới nhất ở tab Lịch trình.</p>
+      <ul class="check">
+        <li><label><input type="checkbox" data-k="tp1"><span>Áo phao hoặc áo khoác dày chống gió</span></label></li>
+        <li><label><input type="checkbox" data-k="tp2"><span>Áo giữ nhiệt mặc trong (kiểu Heattech), quần giữ nhiệt</span></label></li>
+        <li><label><input type="checkbox" data-k="tp3"><span>Nhiều lớp mỏng dễ cởi ra khi vào nhà, trung tâm thương mại</span></label></li>
+        <li><label><input type="checkbox" data-k="tp4"><span>Khăn quàng, găng tay, mũ len</span></label></li>
+        <li><label><input type="checkbox" data-k="tp5"><span>Tất dày, giày thể thao đế bám, chống trơn (đi bộ nhiều ở cung điện, làng Hanok)</span></label></li>
+        <li><label><input type="checkbox" data-k="tp6"><span>Miếng dán giữ nhiệt, kem dưỡng ẩm, son dưỡng môi</span></label></li>
+        <li><label><input type="checkbox" data-k="tp7"><span>Ô gấp nhỏ hoặc áo mưa mỏng</span></label></li>
+        <li><label><input type="checkbox" data-k="tp8"><span>Chừa chỗ trong vali cho đồ mua sắm ở Myeongdong</span></label></li>
+      </ul>
+    </article>
+
+    <article class="pcard hl">
+      <h2><span class="ico" data-t=""><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg></span>Kiểm tra nợ thuế (eTax)</h2>
+      <p>Người còn nợ thuế quá hạn có thể bị tạm hoãn xuất cảnh theo quy định, nên cần kiểm tra và nộp trước ngày bay.</p>
+      <ol class="steps">
+        <li>Cài ứng dụng <b>eTax Mobile</b> của Tổng cục Thuế, hoặc vào <a href="https://thuedientu.gdt.gov.vn/" target="_blank" rel="noopener">thuedientu.gdt.gov.vn</a>.</li>
+        <li>Đăng nhập bằng tài khoản thuế điện tử (hoặc VNeID, nếu đã liên kết).</li>
+        <li>Vào mục <b>Tra cứu nghĩa vụ thuế</b> / <b>Tra cứu nợ thuế</b> để xem còn khoản nào chưa nộp.</li>
+        <li>Nếu có nợ, nộp qua ngân hàng hoặc ví điện tử rồi lưu lại biên lai.</li>
+        <li>Làm sớm, vì khoản vừa nộp có thể mất vài ngày mới cập nhật.</li>
+      </ol>
+      <ul class="check">
+        <li><label><input type="checkbox" data-k="tax1"><span>Đã đăng nhập eTax và kiểm tra nghĩa vụ thuế cá nhân</span></label></li>
+        <li><label><input type="checkbox" data-k="tax2"><span>Không còn nợ thuế quá hạn (hoặc đã nộp và lưu biên lai)</span></label></li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<div id="view-plan">
+<section class="wrap" aria-label="Chuyến bay">
+  <div class="flights">
+    <div class="flight hn">
+      <h3>✈ Đoàn Hà Nội <span class="code">VN416 / VN403</span></h3>
+      <div class="legs">
+        <div class="leg"><b>Đi</b><span>20/11 23:35 → 21/11 05:30</span></div>
+        <div class="leg"><b>Về</b><span>24/11 18:05 → 20:55</span></div>
+      </div>
+    </div>
+    <div class="flight hcm">
+      <h3>✈ Đoàn TP. Hồ Chí Minh <span class="code">VN408 / VN403</span></h3>
+      <div class="legs">
+        <div class="leg"><b>Đi</b><span>20/11 23:50 → 21/11 06:30</span></div>
+        <div class="leg"><b>Về</b><span>24/11 17:55 → 21:20</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<nav class="days" aria-label="Chọn ngày">
+  <div class="wrap">
+    <a href="#ngay-1" data-day="1">Ngày 1 · T7 21/11</a>
+    <a href="#ngay-2" data-day="2">Ngày 2 · CN 22/11</a>
+    <a href="#ngay-3" data-day="3">Ngày 3 · T2 23/11</a>
+    <a href="#ngay-4" data-day="4">Ngày 4 · T3 24/11</a>
+    <a href="#goi-y">Gợi ý thêm</a>
+  </div>
+</nav>
+
+<main class="wrap" id="app"></main>
+</div>
+
+<footer class="wrap">
+  Bấm <b>Google Map</b> hoặc <b>Naver Map</b> để mở chỉ đường. Ở Hàn Quốc, Naver Map chỉ đường đi bộ và tàu điện chính xác hơn.
+  Các quán ăn lấy từ file Seoul Eats. Dự báo thời tiết từ <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> <span id="w-upd"></span>, xem thêm trên <a href="https://www.weather.go.kr/w/index.do" target="_blank" rel="noopener">KMA</a>.
+</footer>
+
+<script>
+const G = q => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
+const N = q => "https://map.naver.com/p/search/" + encodeURIComponent(q);
+const mapsHTML = p => `<div class="maps">
+  <a class="g" href="${p.gurl || G(p.g)}" target="_blank" rel="noopener"><span class="dot">G</span>Google Map</a>
+  <a class="n" href="${N(p.n)}" target="_blank" rel="noopener"><span class="dot">N</span>Naver Map</a>
+</div>`;
+const placeHTML = p => `<div class="place">
+  <div class="place-name">${p.name}${p.ko ? `<span class="ko">${p.ko}</span>` : ""}</div>
+  ${p.note ? `<div class="place-note">${p.note}</div>` : ""}
+  ${mapsHTML(p)}
+</div>`;
+
+const DAYS = [
+  {
+    id: 1, date: "2026-11-21", label: "Thứ Bảy · 21/11", title: "Khám phá cung điện – ẩm thực Hàn Quốc",
+    items: [
+      { time: "05:30", title: "Đoàn Hà Nội đến Incheon" },
+      { time: "06:30", title: "Đoàn TP. HCM đến Incheon" },
+      { time: "05:30 – 08:00", title: "Làm thủ tục nhập cảnh, lấy hành lý",
+        desc: "<ul><li>Đoàn Hà Nội: mua T-money / Climate Card cho cả đoàn</li></ul>" },
+      { time: "08:00 – 09:00", title: "Cả đoàn lên xe về khách sạn, gửi hành lý",
+        places: [{ name: "Sollago Myeongdong Hotel & Residence", ko: "솔라고 명동 호텔", note: "9 Chungmu-ro 2-gil, Jung-gu", g: "Sollago Myeongdong Hotel & Residence", gurl: "https://maps.app.goo.gl/fvBwT4Sa93YaVRRY6", n: "솔라고 명동 호텔앤레지던스" }] },
+      { time: "09:30 – 11:30", event: "Sự kiện chung · Sáng", title: "Cung điện Gyeongbokgung",
+        desc: "Tham quan, chụp ảnh khu vực chính.",
+        places: [{ name: "Gyeongbokgung Palace", ko: "경복궁", g: "Gyeongbokgung Palace", n: "경복궁" }] },
+      { time: "12:00 – 13:00", event: "Sự kiện chung · Trưa", title: "Ăn trưa gà hầm sâm (Samgyetang)",
+        places: [{ name: "Baekje Samyetang", ko: "백제삼계탕", note: "8-10 Myeongdong 8-gil, Jung-gu · Gà tần sâm", g: "Baekje Samyetang Myeongdong", gurl: "https://maps.app.goo.gl/QnWMKvggthUfxvwn9", n: "백제삼계탕 명동" }] },
+      { time: "13:00", title: "Tự do", desc: "Tự do / nghỉ ngơi tại khách sạn (tùy nhu cầu)." },
+      { time: "18:30 – 20:30", event: "Sự kiện chung · Tối", title: "Ăn tối thịt nướng cùng đoàn",
+        places: [{ name: "Chungkiwa Town, Chungmuro", ko: "충기와타운 충무로", note: "22 Chungmu-ro, Jung-gu (tầng 1) · cách khách sạn ~200m", g: "Chungkiwa Town Chungmuro", gurl: "https://maps.app.goo.gl/GDNfgnL1nqMVXsMq7", n: "충기와타운 충무로" }] }
+    ]
+  },
+  {
+    id: 2, date: "2026-11-22", label: "Chủ Nhật · 22/11", title: "Làng Hanok – tự do khám phá Seoul",
+    items: [
+      { time: "Sáng", title: "Ăn sáng tự do" },
+      { time: "09:00 – 12:00", event: "Sự kiện chung · Sáng", title: "Làng Eunpyeong Hanok",
+        desc: "Dạo làng cổ, chụp ảnh, trải nghiệm không gian Hàn Quốc truyền thống.",
+        places: [{ name: "Eunpyeong Hanok Village", ko: "은평한옥마을", g: "Eunpyeong Hanok Village", n: "은평한옥마을" }] },
+      { time: "12:00 – 13:30", title: "Ăn trưa tự do" },
+      { time: "Chiều", title: "Tự do khám phá Seoul", desc: "Xem các điểm ở mục Gợi ý thêm bên dưới." },
+      { time: "19:00 – 21:00", event: "Sự kiện chung · Tối", title: "Ăn tối chợ hải sản Noryangjin",
+        desc: "Thưởng thức cua biển tươi ngon.",
+        places: [{ name: "Noryangjin Fisheries Market", ko: "노량진수산시장", g: "Noryangjin Fisheries Wholesale Market", n: "노량진수산시장" }] }
+    ]
+  },
+  {
+    id: 3, date: "2026-11-23", label: "Thứ Hai · 23/11", title: "Công viên – tự do khám phá Seoul",
+    items: [
+      { time: "Sáng", title: "Ăn sáng tự do" },
+      { time: "09:00 – 12:00", event: "Sự kiện chung · Sáng", title: "Công viên (chọn 1 trong 2)",
+        places: [
+          { name: "Công viên Olympic", ko: "올림픽공원", g: "Olympic Park Seoul", n: "올림픽공원" },
+          { or: true },
+          { name: "Công viên Seoul Forest", ko: "서울숲", g: "Seoul Forest", n: "서울숲" }
+        ] },
+      { time: "12:00 – 13:30", title: "Ăn trưa tự do" },
+      { time: "Chiều", title: "Tự do khám phá Seoul", desc: "Xem các điểm ở mục Gợi ý thêm bên dưới." },
+      { time: "19:00", event: "Sự kiện chung · Tối", title: "Ăn tối tại Gunjadaehan Gopchang Myeongdong",
+        desc: "Lòng bò nướng.",
+        places: [{ name: "Gunjadaehan Gopchang Myeongdong", ko: "군자대한곱창 명동", note: "18-1 Myeongdong 7-gil, Jung-gu", g: "Gunjadaehan Gopchang Myeongdong", gurl: "https://maps.app.goo.gl/dY4dXqSUzYFkgYbL7", n: "군자대한곱창 명동" }] }
+    ]
+  },
+  {
+    id: 4, date: "2026-11-24", label: "Thứ Ba · 24/11", title: "Mua sắm – kết thúc hành trình",
+    items: [
+      { time: "Sáng", title: "Ăn sáng tự do" },
+      { time: "09:00 – 11:30", title: "Mua sắm tại Myeongdong",
+        desc: "Mỹ phẩm, thời trang, quà lưu niệm.",
+        places: [{ name: "Phố mua sắm Myeongdong", ko: "명동거리", g: "Myeongdong Shopping Street", n: "명동거리" }] },
+      { time: "12:00", title: "Trả phòng khách sạn" },
+      { time: "12:00 – 13:30", title: "Ăn trưa tự do", desc: "Tùy chọn nếu còn thời gian." },
+      { time: "14:00", title: "Di chuyển ra sân bay Incheon (T1)" },
+      { time: "Chiều", title: "Chuyến bay về Việt Nam",
+        desc: "<ul><li>Đoàn Hà Nội: 18:05 → 20:55</li><li>Đoàn TP. HCM: 17:55 → 21:20</li></ul>" }
+    ]
+  }
+];
+
+const SUGGEST = [
+  { cat: "Ngắm cảnh", name: "Tháp Namsan", ko: "N서울타워", desc: "N Seoul Tower, nhìn toàn cảnh Seoul, đẹp nhất lúc hoàng hôn.", g: "N Seoul Tower", n: "N서울타워" },
+  { cat: "Ngắm cảnh", name: "Lotte World Tower", ko: "롯데월드타워 서울스카이", desc: "Đài quan sát Seoul Sky, tầng 123.", g: "Lotte World Tower Seoul Sky", n: "서울스카이" },
+  { cat: "Café · Mua sắm", name: "Gangnam / COEX", ko: "별마당도서관", desc: "Thư viện Starfield, mua sắm, café.", g: "Starfield Library COEX", n: "별마당도서관" },
+  { cat: "Mua sắm", name: "The Hyundai Seoul", ko: "더현대 서울", desc: "Trung tâm thương mại The Hyundai Seoul ở Yeouido.", g: "The Hyundai Seoul", n: "더현대 서울" },
+  { cat: "Mua sắm", name: "Shinsegae Duty Free", ko: "신세계면세점 명동점", desc: "Mua sắm cao cấp, gần Myeongdong.", g: "Shinsegae Duty Free Myeongdong", n: "신세계면세점 명동점" },
+  { cat: "Bảo tàng", name: "National Museum of Korea", ko: "국립중앙박물관", desc: "Bảo tàng Quốc gia Hàn Quốc, vào cửa miễn phí.", g: "National Museum of Korea", n: "국립중앙박물관" },
+  { cat: "Bảo tàng", name: "Leeum Museum of Art", ko: "리움미술관", desc: "Bảo tàng nghệ thuật Leeum ở Hannam-dong.", g: "Leeum Museum of Art", n: "리움미술관" }
+];
+
+const app = document.getElementById("app");
+const itemHTML = it => `<li class="item${it.event ? " event" : ""}">
+  <div class="time">${it.time}</div>
+  <div class="body">
+    ${it.event ? `<span class="group-tag">${it.event}</span>` : ""}
+    <div class="title">${it.title}</div>
+    ${it.desc ? `<div class="desc">${it.desc}</div>` : ""}
+    ${(it.places || []).map(p => p.or ? `<div class="or">HOẶC</div>` : placeHTML(p)).join("")}
+  </div>
+</li>`;
+
+app.innerHTML = DAYS.map(d => `<section class="day" id="ngay-${d.id}" data-day="${d.id}" data-date="${d.date}">
+  <div class="day-head" role="button" tabindex="0" aria-expanded="true" aria-controls="tl-${d.id}">
+    <div>
+      <div class="num"><span class="chev" aria-hidden="true">▾</span>Ngày ${d.id}<span class="today-tag">Hôm nay</span></div>
+      <h2>${d.title}</h2>
+    </div>
+    <div class="day-side">
+      <div class="date">${d.label}</div>
+      <div class="day-w" data-w="${d.date}" title="Dự báo Seoul"></div>
+    </div>
+  </div>
+  <ol class="timeline" id="tl-${d.id}">${d.items.map(itemHTML).join("")}</ol>
+</section>`).join("") + `
+<section id="goi-y" class="day">
+  <div class="section-title"><h2>Gợi ý điểm đến khác</h2><p>Cho thời gian tự do chiều ngày 2 và ngày 3</p></div>
+  <div class="cards">${SUGGEST.map(s => `<article class="card">
+    <div class="cat">${s.cat}</div>
+    <h3>${s.name}</h3>
+    <div class="ko">${s.ko}</div>
+    <p>${s.desc}</p>
+    ${mapsHTML(s)}
+  </article>`).join("")}</div>
+</section>
+<details class="poster" id="lich-goc">
+  <summary>Xem lịch trình gốc (ảnh)</summary>
+  <img src="IMG_1986.JPG" alt="Ảnh lịch trình gốc Seoul Department Trip 20–24/11/2026" loading="lazy">
+</details>`;
+
+// Chuyển tab Lịch trình / Chuẩn bị theo hash (#chuan-bi), nhớ ô đã tích
+function showTab(forcePrep) {
+  const prep = typeof forcePrep === "boolean" ? forcePrep : location.hash === "#chuan-bi";
+  document.getElementById("view-prep").hidden = !prep;
+  document.getElementById("view-plan").hidden = prep;
+  document.getElementById("tab-prep").setAttribute("aria-selected", String(prep));
+  document.getElementById("tab-plan").setAttribute("aria-selected", String(!prep));
+  if (prep) window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", () => showTab());
+document.getElementById("tab-prep").addEventListener("click", () => showTab(true));
+document.getElementById("tab-plan").addEventListener("click", () => showTab(false));
+showTab();
+document.querySelectorAll("#view-prep input[data-k]").forEach(cb => {
+  try { cb.checked = localStorage.getItem("seoul-prep-" + cb.dataset.k) === "1"; } catch (e) {}
+  cb.addEventListener("change", () => { try { localStorage.setItem("seoul-prep-" + cb.dataset.k, cb.checked ? "1" : "0"); } catch (e) {} });
+});
+
+// Bấm tiêu đề ngày để thu gọn / mở rộng; bấm tab ngày trên thanh điều hướng sẽ mở ngày đó
+function setDay(day, open) {
+  day.classList.toggle("collapsed", !open);
+  day.querySelector(".day-head").setAttribute("aria-expanded", String(open));
+}
+document.querySelectorAll(".day-head[role=button]").forEach(h => {
+  const toggle = e => {
+    if (e.target.closest("a")) return;
+    const day = h.closest(".day");
+    setDay(day, day.classList.contains("collapsed"));
+  };
+  h.addEventListener("click", toggle);
+  h.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(e); } });
+});
+// Dùng JS để cuộn, vì một số khung xem trước không hỗ trợ link neo (#)
+document.querySelectorAll('nav.days a[href^="#"]').forEach(a => a.addEventListener("click", e => {
+  const target = document.querySelector(a.getAttribute("href")); if (!target) return;
+  e.preventDefault();
+  if (target.classList.contains("day") && target.dataset.day) setDay(target, true);
+  target.scrollIntoView({ behavior: "smooth", block: "start" });
+  try { history.replaceState(null, "", a.getAttribute("href")); } catch (err) {}
+}));
+
+// Thời tiết trực tiếp (Open-Meteo, không cần API key)
+async function loadWeather() {
+  const slots = [...document.querySelectorAll(".day-w")];
+  slots.forEach(s => s.textContent = "Đang tải thời tiết…");
+  const WMO = c => c === 0 ? ["☀️","Trời nắng"] : c <= 2 ? ["🌤️","Ít mây"] : c === 3 ? ["☁️","Nhiều mây"]
+    : c <= 48 ? ["🌫️","Sương mù"] : c <= 57 ? ["🌦️","Mưa phùn"] : c <= 67 ? ["🌧️","Mưa"]
+    : c <= 77 ? ["🌨️","Tuyết"] : c <= 82 ? ["🌧️","Mưa rào"] : c <= 86 ? ["🌨️","Tuyết rơi"] : ["⛈️","Dông"];
+  try {
+    const url = "https://api.open-meteo.com/v1/forecast?latitude=37.5665&longitude=126.9780"
+      + "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max"
+      + "&timezone=Asia%2FSeoul&forecast_days=16";
+    const ac = new AbortController(); const to = setTimeout(() => ac.abort(), 8000);
+    const r = await fetch(url, { signal: ac.signal }); clearTimeout(to);
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const j = await r.json();
+    slots.forEach(s => {
+      const i = j.daily.time.indexOf(s.dataset.w);
+      if (i < 0) { s.textContent = "Chưa có dự báo (còn xa ngày đi)"; return; }
+      const [ic, lb] = WMO(j.daily.weather_code[i]);
+      s.innerHTML = `<span class="ic">${ic}</span><span class="t">${Math.round(j.daily.temperature_2m_max[i])}° <small>/ ${Math.round(j.daily.temperature_2m_min[i])}°</small></span>
+        <span class="c">${lb}</span><span class="r">· mưa ${j.daily.precipitation_probability_max[i] ?? "–"}%</span>`;
+    });
+    document.getElementById("w-upd").textContent = "(tải lúc " + new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }) + ")";
+  } catch (e) {
+    slots.forEach((s, k) => {
+      s.innerHTML = `Không tải được (${e.name}: ${e.message}) <a href="#" class="w-retry">thử lại</a>`;
+      s.querySelector(".w-retry").onclick = ev => { ev.preventDefault(); loadWeather(); };
+    });
+  }
+}
+loadWeather();
+
+// Đánh dấu "Hôm nay" theo giờ Seoul
+try {
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Seoul" }).format(new Date());
+  const el = document.querySelector(`.day[data-date="${today}"]`);
+  if (el) el.classList.add("is-today");
+} catch (e) {}
+</script>
