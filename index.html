@@ -3,7 +3,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Lexend:wght@500;600;700&family=Gowun+Dodum&display=swap">
-<script src="https://unpkg.com/lucide@latest"></script>
 <style>
 /* Layout: một cột dọc, thanh ngày dính trên cùng; mỗi ngày là một dải màu pastel riêng, mỗi điểm đến có nút Google Map + Naver Map */
 :root {
@@ -74,7 +73,7 @@ a { color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
 
 /* Header */
-header { padding-block: 40px 44px; }
+header { padding-block: 40px 24px; }
 .eyebrow {
   font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
   color: var(--accent); font-weight: 600;
@@ -326,94 +325,9 @@ html { scroll-behavior: smooth; }
   <img class="r" src="assets/doodles/ddp.svg" alt="" style="top: 54%; transform: rotate(3deg);">
   <img class="r" src="assets/doodles/ginkgo.svg" alt="" style="top: 77%; transform: rotate(-5deg);">
 </div>
-<header class="wrap" style="position: relative;">
-  <svg class="skyline-bg" viewBox="4 28 1192 226" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet" style="position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.1; pointer-events: none; z-index: 0;">
-    <!-- Seoul Skyline Lineart -->
-    <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-      <!-- Hanok pavilion (Deoksugung) -->
-      <path d="M58,172 H156"/>
-      <path d="M58,172 L34,182 M156,172 L180,182"/>
-      <path d="M34,182 C54,190 78,193 107,193 C136,193 160,190 180,182"/>
-      <path d="M62,172 v-7 M152,172 v-7" stroke-width="1.3"/>
-      <path d="M58,193 H156" stroke-width="1.3"/>
-      <path d="M58,230 H156" stroke-width="1.3"/>
-      <path d="M64,193 v37 M88,193 v37 M112,193 v37 M136,193 v37" stroke-width="1.2"/>
-      <path d="M46,230 H168 V250 H46 Z"/>
-
-      <!-- Low-rise blocks -->
-      <path d="M200,250 v-44 h26 v44"/>
-      <path d="M204,218 h18 M204,230 h18 M204,242 h18" stroke-width="1.1"/>
-      <path d="M230,250 v-78 h30 v78"/>
-      <path d="M235,184 h20 M235,198 h20 M235,212 h20 M235,226 h20 M235,240 h20" stroke-width="1.1"/>
-      <path d="M264,250 v-56 h24 v56"/>
-      <path d="M268,206 h16 M268,220 h16 M268,234 h16" stroke-width="1.1"/>
-
-      <!-- N Seoul Tower on Namsan -->
-      <path d="M296,250 Q364,214 432,250" stroke-width="1.6"/>
-      <path d="M350,226 L358,170 M378,226 L370,170"/>
-      <path d="M358,170 L343,152 M370,170 L385,152"/>
-      <path d="M343,152 H385 V124 H343 Z"/>
-      <path d="M343,134 H385 M343,143 H385" stroke-width="1.1"/>
-      <path d="M343,124 L352,113 H376 L385,124"/>
-      <path d="M364,113 V36" stroke-width="1.6"/>
-      <path d="M356,72 h16 M358,55 h12" stroke-width="1.1"/>
-
-      <!-- Gwanghwamun gate -->
-      <path d="M452,146 H628"/>
-      <path d="M452,146 L430,160 M628,146 L650,160"/>
-      <path d="M430,160 C462,172 498,176 540,176 C582,176 618,172 650,160"/>
-      <path d="M456,146 v-7 M624,146 v-7" stroke-width="1.3"/>
-      <path d="M474,176 H606" stroke-width="1.3"/>
-      <path d="M474,194 H606" stroke-width="1.3"/>
-      <path d="M492,176 v18 M518,176 v18 M562,176 v18 M588,176 v18" stroke-width="1.2"/>
-      <path d="M440,194 H640"/>
-      <path d="M440,194 L418,208 M640,194 L662,208"/>
-      <path d="M418,208 C452,220 494,224 540,224 C586,224 628,220 662,208"/>
-      <path d="M446,250 V220 H634 V250"/>
-      <path d="M466,250 v-12 a12,12 0 0 1 24,0 v12" stroke-width="1.4"/>
-      <path d="M528,250 v-12 a12,12 0 0 1 24,0 v12" stroke-width="1.4"/>
-      <path d="M590,250 v-12 a12,12 0 0 1 24,0 v12" stroke-width="1.4"/>
-
-      <!-- Lotte World Tower -->
-      <path d="M660,250 C668,178 680,106 690,46 L692,40 Q700,34 708,40 L710,46 C720,106 732,178 740,250"/>
-      <path d="M700,38 V250" stroke-width="1.1"/>
-      <path d="M663,214 h74 M668,178 h64 M674,142 h52 M680,106 h40 M686,70 h28" stroke-width="1.1"/>
-
-      <!-- Modern towers -->
-      <path d="M752,250 V190 H764 V180 H788 V250"/>
-      <path d="M756,200 h28 M756,216 h28 M756,232 h28" stroke-width="1.1"/>
-      <path d="M796,250 V132 H822 V250"/>
-      <path d="M809,132 V106" stroke-width="1.4"/>
-      <path d="M800,148 h18 M800,168 h18 M800,188 h18 M800,208 h18 M800,228 h18" stroke-width="1.1"/>
-      <path d="M830,250 V198 H860 V250"/>
-      <path d="M838,198 V188 H852 V198" stroke-width="1.3"/>
-      <path d="M834,210 h22 M834,226 h22 M834,242 h22" stroke-width="1.1"/>
-      <path d="M866,250 V156 H890 V250"/>
-      <path d="M870,172 h16 M870,190 h16 M870,208 h16 M870,226 h16 M870,244 h16" stroke-width="1.1"/>
-
-      <!-- DDP (Dongdaemun Design Plaza) -->
-      <path d="M906,250 C914,239 926,233 942,231" stroke-width="1.5"/>
-      <path d="M880,250 C898,222 928,204 968,199 C1014,193 1062,201 1100,215 C1134,227 1160,239 1176,250"/>
-      <path d="M898,250 C914,230 940,216 972,212 C1014,207 1056,215 1090,227 C1120,238 1146,244 1158,250" stroke-width="1.1"/>
-      <path d="M920,250 C932,237 954,228 980,225 C1016,221 1052,228 1080,238 C1104,246 1122,248 1134,250" stroke-width="1.1"/>
-      <path d="M944,250 C952,243 968,238 988,236 C1014,234 1042,240 1062,246 C1072,249 1080,250 1086,250" stroke-width="1.1"/>
-      <path d="M934,203 L940,218 M976,199 L980,213 M1022,197 L1024,211 M1066,204 L1068,218 M1106,218 L1110,230" stroke-width="1.1"/>
-
-      <!-- Right closers -->
-      <path d="M1152,250 v-58 h20 v58"/>
-      <path d="M1162,192 v-18" stroke-width="1.2"/>
-      <path d="M1156,208 h12 M1156,224 h12 M1156,240 h12" stroke-width="1.1"/>
-      <path d="M1178,250 v-40 h16 v40"/>
-      <path d="M1182,224 h8 M1182,238 h8" stroke-width="1.1"/>
-
-      <!-- Ground -->
-      <path d="M10,250 H1190"/>
-    </g>
-  </svg>
-  <div style="position: relative; z-index: 1;">
-    <div class="eyebrow">Mùa thu Seoul · 2026</div>
-    <h1>DCM - Run Run in Seoul Trip</h1>
-  </div>
+<header class="wrap">
+  <div class="eyebrow">Mùa thu Seoul · 2026</div>
+  <h1>DCM - Run Run in Seoul Trip</h1>
 </header>
 
 <div class="wrap">
@@ -646,29 +560,12 @@ const SUGGEST = [
 ];
 
 const app = document.getElementById("app");
-const getEventIcon = (title) => {
-  const t = title.toLowerCase();
-  if (t.includes("bay") || t.includes("incheon")) return "plane";
-  if (t.includes("cung") || t.includes("palace")) return "landmark";
-  if (t.includes("ăn") || t.includes("gà") || t.includes("thịt") || t.includes("samgyetang")) return "utensils";
-  if (t.includes("xe") || t.includes("taxi")) return "car";
-  if (t.includes("khách sạn") || t.includes("hotel")) return "hotel";
-  if (t.includes("chợ") || t.includes("market")) return "shopping-cart";
-  if (t.includes("hanok") || t.includes("làng")) return "home";
-  if (t.includes("công viên")) return "trees";
-  if (t.includes("thủ tục") || t.includes("hành lý")) return "luggage";
-  if (t.includes("myeongdong")) return "shopping-bag";
-  if (t.includes("tự do")) return "compass";
-  return "map-pin";
-};
-
 const itemHTML = it => {
-  const icon = getEventIcon(it.title);
   return `<li class="item${it.event ? " event" : ""}">
   <div class="time">${it.time}</div>
   <div class="body">
     ${it.event ? `<span class="group-tag">${it.event}</span>` : ""}
-    <div class="title"><i data-lucide="${icon}" style="width: 18px; height: 18px; display: inline; margin-right: 8px; vertical-align: -3px;"></i>${it.title}</div>
+    <div class="title">${it.title}</div>
     ${it.desc ? `<div class="desc">${it.desc}</div>` : ""}
     ${(it.places || []).map(p => p.or ? `<div class="or">HOẶC</div>` : placeHTML(p)).join("")}
   </div>
@@ -775,9 +672,6 @@ async function loadWeather() {
   }
 }
 loadWeather();
-
-// Render Lucide icons
-lucide.createIcons();
 
 // Đánh dấu "Hôm nay" theo giờ Seoul
 try {
